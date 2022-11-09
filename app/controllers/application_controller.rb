@@ -27,21 +27,57 @@ class ApplicationController < Sinatra::Base
     location.apartments.to_json
   end
   
-  # get "apartments-by-rooms/:rooms" do
-  #   by_rooms = Apartment.find_by(room: params[:rooms])
-  #   by_rooms.to_json
-  # end
+  get "/apartments-by-room/:rooms" do
+    by_rooms = Apartment.find_by(room: params[:rooms])
+    by_rooms.to_json
+  end
 
   get "/appointments" do
     all_appointments = Appointment.all 
     all_appointments.to_json
   end
 
-  post "/appointments" do
+  post "/appointment" do
     new_appointment = Appointment.create(
       client_id: params[:client_id],
       apartment_id: params[:apartment_id]
     )
+    new_appointment.to_json
+  end
+
+  patch "/appointment/:id" do
+    update_appointment = Appointment.find(params[:id])
+    update_appointment.update(
+      client_id: params[:client_id],
+      apartment_id: params[:apartment_id]
+    )
+    update_appointment.to_json
+  end
+
+  post "/apartment" do
+    new_apartment = Apartment.create(
+      title: params[:title],
+      image: params[:image],
+      description: params[:description],
+      room: params[:room],
+      location_id: params[:location_id],
+      caretaker_contact: params[:caretaker_contact],
+      rent: params[:rent]
+    )
+    new_apartment.to_json
+  end
+
+  delete "/apartment/:id" do
+    remove_apartment = Apartment.find(params[:id])
+    remove_apartment.destroy
+    remove_apartment.to_json
+  end
+
+  delete "/appointment/:id" do
+     remove_appointment = Appointment.find(params[:id])
+     remove_appointment.destroy
+     remove_appointment.to_json
+    #  {message: "appointment removed"}.to_json
   end
 
 end
