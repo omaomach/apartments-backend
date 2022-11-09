@@ -32,6 +32,17 @@ class ApplicationController < Sinatra::Base
     by_rooms.to_json
   end
 
+  get "/apartments/:id" do 
+    apartment = Apartment.find(params[:id])
+    apartment.to_json(only: [
+        :id, :title, :image, :description, :room, :location_id, :rent
+    ],include: {
+      appointments: {only: [
+        :client_id, :apartment_id
+      ]}
+    })
+  end
+
   get "/appointments" do
     all_appointments = Appointment.all 
     all_appointments.to_json
