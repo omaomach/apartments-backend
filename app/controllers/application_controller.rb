@@ -48,6 +48,11 @@ class ApplicationController < Sinatra::Base
     all_appointments.to_json
   end
 
+  get "/images" do 
+    all_images = Image.all 
+    all_images.to_json
+  end
+
   post "/appointment" do
     new_appointment = Appointment.create(
       client_id: params[:client_id],
@@ -76,6 +81,14 @@ class ApplicationController < Sinatra::Base
       rent: params[:rent]
     )
     new_apartment.to_json
+  end
+
+  post "/image" do
+    new_image = Image.create(
+      image_url: params[:image_url],
+      apartment_id: params[:apartment_id]
+    )
+    new_image.to_json
   end
 
   delete "/apartment/:id" do
