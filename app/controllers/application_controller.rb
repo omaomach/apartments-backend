@@ -39,6 +39,9 @@ class ApplicationController < Sinatra::Base
     ],include: {
       appointments: {only: [
         :client_id, :apartment_id
+      ]},
+      images: {only: [
+        :image_url, :apartment_id
       ]}
     })
   end
