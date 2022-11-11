@@ -12,8 +12,9 @@ class ApplicationController < Sinatra::Base
   
   # Add your routes here
   get "/apartments" do
-    all_apartments = Apartment.all 
-    all_apartments.to_json
+    Apartment.all.to_json(include: {
+      location: {only: [:name]}
+    })
   end
 
   get "/apartments-rent/:rent" do
@@ -30,6 +31,11 @@ class ApplicationController < Sinatra::Base
     all_locations = Location.all 
     all_locations.to_json
   end
+
+  # get "/location/#id" do
+  #   apartment = Apartment.find(params[:id])
+  #   apartment.location.to_json
+  # end
 
   get "/apartment-by-location/:location" do
     location = Location.find_by(name: params[:location])
@@ -50,19 +56,27 @@ class ApplicationController < Sinatra::Base
         :client_id, :apartment_id
       ]},
       images: {only: [
-        :image_url, :apartment_id
+        :id, :image_url, :apartment_id
+      ]},
+      location: {only: [
+        :name
       ]}
     })
   end
 
-  get "/appointments" do
-    all_appointments = Appointment.all 
-    all_appointments.to_json
-  end
+  # get "/appointments" do
+  #   all_appointments = Appointment.all 
+  #   all_appointments.to_json
+  # end
 
   get "/images" do 
     all_images = Image.all 
     all_images.to_json
+  end
+
+  get "/clients/:id" do
+    all_clients = Client.(params[:id])
+    all_clients.to_json
   end
 
   post "/appointment" do
@@ -80,6 +94,13 @@ class ApplicationController < Sinatra::Base
       apartment_id: params[:apartment_id]
     )
     update_appointment.to_json
+  end
+
+  get "/appointments" do
+    Appointment.all.to_json(include: {
+      client: {only: [:name]},
+      apartment: {only: [:title]}
+   })
   end
 
   post "/apartment" do
@@ -101,6 +122,15 @@ class ApplicationController < Sinatra::Base
       apartment_id: params[:apartment_id]
     )
     new_image.to_json
+  end
+
+  post "/client" do
+    new_client = Client.create(
+      name: params[:name],
+      age: params[:age],
+      phone_number: params[:phone_number]
+    )
+    new_client.to_json
   end
 
   delete "/apartment/:id" do
