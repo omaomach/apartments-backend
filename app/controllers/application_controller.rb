@@ -79,12 +79,19 @@ class ApplicationController < Sinatra::Base
     all_clients.to_json
   end
 
+  get "/clients/:name/:age/:phone_number" do
+    Client.where(name: params[:name], age: params[:age], phone_number: params[:phone_number]).to_json
+  end
+
   post "/appointment" do
     new_appointment = Appointment.create(
       client_id: params[:client_id],
       apartment_id: params[:apartment_id]
     )
-    new_appointment.to_json
+    new_appointment.to_json(include: {
+      client: {only: [:name]},
+      apartment: {only: [:title]}
+   })
   end
 
   patch "/appointment/:id" do
